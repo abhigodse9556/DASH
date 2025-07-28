@@ -1,34 +1,19 @@
 package com.project.mypersonalassistant.auth
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.project.mypersonalassistant.components.CustomButton
 import com.project.mypersonalassistant.components.CustomTextField
 import com.project.mypersonalassistant.components.showToast
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,6 +39,8 @@ fun SecurityQuestionDropdown(
             .fillMaxWidth()
             .padding(8.dp)
     ) {
+        val containerColor = MaterialTheme.colorScheme.surface // or any color you prefer
+
         TextField(
             value = selectedQuestion,
             onValueChange = {},
@@ -62,11 +49,16 @@ fun SecurityQuestionDropdown(
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
-            colors = TextFieldDefaults.textFieldColors(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor
+            ),
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
         )
+
 
         ExposedDropdownMenu(
             expanded = expanded,
@@ -89,11 +81,16 @@ fun SecurityQuestionDropdown(
 
 @Composable
 fun RegistrationPage( onLoginClick: () -> Unit) {
+
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var mobile by remember { mutableStateOf("") }
     var user by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var selectedQuestion by remember { mutableStateOf("") }
     var securityAnswer by remember { mutableStateOf("") }
-
+    val scrollState = rememberScrollState()
     fun cancelRegister() {
         user = ""
         password = ""
@@ -111,79 +108,147 @@ fun RegistrationPage( onLoginClick: () -> Unit) {
             showToast(context, "error","Incorrect Credentials!", Toast.LENGTH_LONG)
         }
     }
-    Column(
+
+    fun handleEmailChange(mail: String) {
+        email = mail
+        user = if (mail.contains("@")) mail.substringBefore("@") else mail
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    )
-    {
-        Text(text = "Register", style = MaterialTheme.typography.headlineMedium)
+    ) {
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        CustomTextField(
-            value = user,
-            onValueChange = { user = it },
-            label = "User Name",
-            modifier = Modifier.fillMaxWidth()
+        Text(
+            text = "Register",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(16.dp)
+                .zIndex(1000F)
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .padding(top = 80.dp)
+                .padding(horizontal = 10.dp)
+                .align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        CustomTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = "Password",
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
+            Spacer(modifier = Modifier.height(4.dp))
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Row {
+                CustomTextField(
+                    value = firstName,
+                    onValueChange = { firstName = it },
+                    label = "First Name",
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                CustomTextField(
+                    value = lastName,
+                    onValueChange = { lastName = it },
+                    label = "Last Name",
+                    modifier = Modifier.weight(1f)
+                )
+            }
 
-        SecurityQuestionDropdown(
-            selectedQuestion = selectedQuestion,
-            onQuestionSelected = { selectedQuestion = it }
-        )
+            Spacer(modifier = Modifier.height(10.dp))
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        CustomTextField(
-            value = securityAnswer,
-            onValueChange = { securityAnswer = it },
-            label = "Your Answer",
-            enabled = selectedQuestion != ""
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Row(modifier = Modifier.fillMaxWidth()) {
-            CustomButton(
-                text = "Cancel",
-                onClick = {
-                    cancelRegister()
-                },
-                modifier = Modifier.weight(1f),
-                enabled = !disableBtn(),
+            CustomTextField(
+                value = email,
+                onValueChange = { handleEmailChange(it) },
+                label = "Email ID",
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            CustomButton(
-                text = "Register",
-                onClick = {
-                    handleRegister()
-                },
-                modifier = Modifier.weight(1f),
-                enabled = !disableBtn(),
+            CustomTextField(
+                value = mobile,
+                onValueChange = { mobile = it },
+                label = "Mobile No.",
+                modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            CustomTextField(
+                value = user,
+                onValueChange = { user = it },
+                label = "User Name",
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            CustomTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = "Password",
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            SecurityQuestionDropdown(
+                selectedQuestion = selectedQuestion,
+                onQuestionSelected = { selectedQuestion = it }
+            )
+
+            CustomTextField(
+                value = securityAnswer,
+                onValueChange = { securityAnswer = it },
+                label = "Your Answer",
+                enabled = selectedQuestion.isNotBlank()
+            )
+
+            Spacer(modifier = Modifier.height(150.dp))
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        TextButton(onClick = onLoginClick) {
-            Text("Already have an account? Login")
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .shadow(8.dp, shape = RoundedCornerShape(12.dp))
+                .background(Color.White, shape = RoundedCornerShape(18.dp)),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            TextButton(onClick = onLoginClick) {
+                Text("Already have an account? Login")
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                CustomButton(
+                    text = "Cancel",
+                    onClick = {
+                        cancelRegister()
+                    },
+                    modifier = Modifier.weight(1f),
+                    enabled = !disableBtn()
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                CustomButton(
+                    text = "Register",
+                    onClick = {
+                        handleRegister()
+                    },
+                    modifier = Modifier.weight(1f),
+                    enabled = user.isNotBlank() && password.isNotBlank()
+                )
+            }
+
         }
     }
 }
