@@ -10,14 +10,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.project.mypersonalassistant.components.CustomButton
 import com.project.mypersonalassistant.components.CustomTextField
 import com.project.mypersonalassistant.components.showToast
+import com.project.mypersonalassistant.navigation.auth.AuthRoutes
+import com.project.mypersonalassistant.viewModel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage( onRegisterClick: () -> Unit) {
+fun LoginPage( navigateTo: (AuthRoutes) -> Unit ) {
+    val context = LocalContext.current
+    val authViewModel: AuthViewModel = viewModel()
     var user by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -27,13 +32,22 @@ fun LoginPage( onRegisterClick: () -> Unit) {
     }
 
     fun disableBtn() = user.isBlank() || password.isBlank()
-    val context = LocalContext.current
 
     fun handleLogin() {
-        if (user == "Abhi" && password == "1234") {
-            showToast(context, "success", "Hello $user!")
+        if (user == "" || password == "") {
+            showToast(context, "error", "Missing Credentials!")
         } else {
-            showToast(context, "error","Incorrect Credentials!", Toast.LENGTH_LONG)
+            authViewModel.login(
+                user,
+                password,
+                onSuccess = {
+                    showToast(context, "success", "Login Successfull!")
+                    navigateTo(AuthRoutes.Home)
+                },
+                onFailure = {
+                    showToast(context, "error", "Invalid Credentials!")
+                }
+            )
         }
     }
 
@@ -55,7 +69,7 @@ fun LoginPage( onRegisterClick: () -> Unit) {
         CustomTextField(
             value = user,
             onValueChange = { user = it },
-            label = "User Name",
+            label = "User Name or Email Id",
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -95,7 +109,11 @@ fun LoginPage( onRegisterClick: () -> Unit) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        TextButton(onClick = onRegisterClick) {
+        TextButton(
+            onClick = {
+                navigateTo(AuthRoutes.Register)
+            }
+        ) {
             Text("Don't have an account? Register")
         }
 

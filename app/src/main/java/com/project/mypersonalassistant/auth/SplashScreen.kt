@@ -11,9 +11,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import com.project.mypersonalassistant.R
+import com.project.mypersonalassistant.navigation.auth.AuthRoutes
 
 @Composable
-fun SplashScreen(goToLoginPage: () -> Unit) {
+fun SplashScreen(navigateTo: (AuthRoutes) -> Unit) {
     var animatedText by remember { mutableStateOf("") }
     val fullText = "Daily Assistant for Scheduling & Help"
     var showTick by remember { mutableStateOf(false) }
@@ -30,7 +31,7 @@ fun SplashScreen(goToLoginPage: () -> Unit) {
         showTick = true
 
         delay(1500)
-        goToLoginPage()
+        navigateTo(AuthRoutes.Login)
     }
 
     // UI

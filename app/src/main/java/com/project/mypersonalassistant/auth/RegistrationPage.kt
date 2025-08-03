@@ -15,6 +15,10 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.project.mypersonalassistant.navigation.auth.AuthRoutes
+import com.project.mypersonalassistant.roomDB.entity.User
+import com.project.mypersonalassistant.viewModel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,7 +84,9 @@ fun SecurityQuestionDropdown(
 
 
 @Composable
-fun RegistrationPage( onLoginClick: () -> Unit) {
+fun RegistrationPage( navigateTo: (AuthRoutes) -> Unit) {
+    val context = LocalContext.current
+    val authViewModel: AuthViewModel = viewModel()
 
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
@@ -98,14 +104,48 @@ fun RegistrationPage( onLoginClick: () -> Unit) {
 
     fun disableBtn() = user.isBlank() || password.isBlank()
 
-    val context = LocalContext.current
+    fun isFormValid():Boolean {
+        if (
+            user == "" ||
+            firstName == "" ||
+            lastName == "" ||
+            email == "" ||
+            mobile == "" ||
+            selectedQuestion == "" ||
+            securityAnswer == "" ||
+            password == ""
+            ) {
+            return false
+        }
+        return true
+    }
 
     fun handleRegister() {
-        if (user == "Abhi" && password == "1234") {
-            showToast(context, "success", "Thanks $user!")
-            onLoginClick()
+        if (!isFormValid()) {
+            showToast(context, "error", "All fields are required!", Toast.LENGTH_LONG)
+            return
         } else {
-            showToast(context, "error","Incorrect Credentials!", Toast.LENGTH_LONG)
+            val newUser = User(
+                firstname = firstName,
+                lastname = lastName,
+                email = email,
+                mobile = mobile,
+                username = user,
+                password = password,
+                question = selectedQuestion,
+                answer = securityAnswer
+            )
+
+            authViewModel.register(
+                user = newUser,
+                onSuccess = {
+                    showToast(context, "success", "Registration successful!", Toast.LENGTH_LONG)
+                    navigateTo(AuthRoutes.Login) // navigate to login
+                },
+                onFailure = { error ->
+                    showToast(context, "error", error, Toast.LENGTH_LONG)
+                }
+            )
         }
     }
 
@@ -220,7 +260,11 @@ fun RegistrationPage( onLoginClick: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            TextButton(onClick = onLoginClick) {
+            TextButton(
+                onClick = {
+                    navigateTo(AuthRoutes.Login)
+                }
+            ) {
                 Text("Already have an account? Login")
             }
 
