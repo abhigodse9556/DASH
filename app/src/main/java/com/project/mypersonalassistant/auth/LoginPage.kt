@@ -10,7 +10,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
+import androidx.compose.foundation.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.project.mypersonalassistant.R
 
 import com.project.mypersonalassistant.components.CustomButton
 import com.project.mypersonalassistant.components.CustomTextField
@@ -58,53 +64,73 @@ fun LoginPage( navigateTo: (AuthRoutes) -> Unit ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(10.dp)
+            .background(Color.Yellow)
+            .border(
+                width = 2.dp,
+                color = Color.Gray,
+                shape = RoundedCornerShape(16.dp) // border radius
+            ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Login", style = MaterialTheme.typography.headlineMedium)
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        CustomTextField(
-            value = user,
-            onValueChange = { user = it },
-            label = "User Name or Email Id",
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        CustomTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = "Password",
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+        Image(
+            painter = painterResource(id = R.drawable.poster_mini),
+            contentDescription = "App Poster",
+            modifier = Modifier
+                .height(200.dp)
+                .width(400.dp)
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            CustomButton(
-                text = "Cancel",
-                onClick = {
-                    cancelLogin()
-                },
-                modifier = Modifier.weight(1f),
-                enabled = !disableBtn(),
+        Column(
+            modifier = Modifier
+                .padding(10.dp)
+        ) {
+            CustomTextField(
+                value = user,
+                onValueChange = { user = it },
+                label = "User Name or Email Id",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
             )
-            
-            Spacer(modifier = Modifier.width(10.dp))
-            
-            CustomButton(
-                text = "Login",
-                onClick = {
-                    handleLogin()
-                },
-                modifier = Modifier.weight(1f),
-                enabled = !disableBtn(),
+
+            CustomTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = "Password",
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                CustomButton(
+                    text = "Cancel",
+                    onClick = {
+                        cancelLogin()
+                    },
+                    modifier = Modifier.weight(1f),
+                    enabled = !disableBtn(),
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                CustomButton(
+                    text = "Login",
+                    onClick = {
+                        handleLogin()
+                    },
+                    modifier = Modifier.weight(1f),
+                    enabled = !disableBtn(),
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))

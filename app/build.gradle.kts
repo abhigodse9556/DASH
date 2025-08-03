@@ -51,6 +51,21 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    applicationVariants.all {
+        outputs.all {
+            val appName = "DASH"
+            val versionName = "1"
+            val buildType = "release"
+            val date = "03-08"
+
+            val newApkName = "${appName}-v${versionName}-${buildType}-${date}.apk"
+
+            if (this is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
+                outputFileName = newApkName
+            }
+        }
+    }
 }
 
 dependencies {
