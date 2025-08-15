@@ -5,5 +5,6 @@ sealed class AuthRoutes(val route: String) {
     object Introduction : AuthRoutes("introduction")
     object Login : AuthRoutes("login")
     object Register : AuthRoutes("register")
+    object ResetPass : AuthRoutes("register")
     object Home : AuthRoutes("home")
 }

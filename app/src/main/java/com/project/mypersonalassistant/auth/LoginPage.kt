@@ -143,5 +143,15 @@ fun LoginPage( navigateTo: (AuthRoutes) -> Unit ) {
             Text("Don't have an account? Register")
         }
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+        TextButton(
+            onClick = {
+                navigateTo(AuthRoutes.ResetPass)
+            }
+        ) {
+            Text("Forget Password?")
+        }
+
     }
 }

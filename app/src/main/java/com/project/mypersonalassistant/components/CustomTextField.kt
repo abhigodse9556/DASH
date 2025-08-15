@@ -29,6 +29,7 @@ fun CustomTextField(
     enabled: Boolean = true,
     trailingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
+    supportingText: @Composable (() -> Unit)? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -55,6 +56,8 @@ fun CustomTextField(
         readOnly = readOnly,
         enabled = enabled,
         trailingIcon = trailingIcon,
+        isError = isError,
+        supportingText = supportingText,
         shape = RoundedCornerShape(12.dp), // border radius
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Color.Blue,

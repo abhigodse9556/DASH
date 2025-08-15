@@ -57,9 +57,10 @@ android {
             val appName = "DASH"
             val versionName = "1"
             val buildType = "release"
-            val date = "03-08"
+            val date = "16-08"
+            val time = "1AM"
 
-            val newApkName = "${appName}-v${versionName}-${buildType}-${date}.apk"
+            val newApkName = "${appName}-v${versionName}-${buildType}-${date}-${time}.apk"
 
             if (this is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
                 outputFileName = newApkName

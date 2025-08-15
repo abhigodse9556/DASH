@@ -1,6 +1,6 @@
 package com.project.mypersonalassistant.roomDB.repository
 
-import com.project.mypersonalassistant.roomDB.DAO.UserDao
+import com.project.mypersonalassistant.roomDB.dao.UserDao
 import com.project.mypersonalassistant.roomDB.entity.User
 
 class UserRepository(private val userDao: UserDao) {
@@ -12,4 +12,10 @@ class UserRepository(private val userDao: UserDao) {
 
     suspend fun isUserExists(username: String): Boolean =
         userDao.getUserByUsernameOrEmail(username) != null
+
+    suspend fun getSecurityQA(username: String) =
+        userDao.getSecurityQA(username)
+
+    suspend fun updatePassword(username: String, newPassword: String) =
+        userDao.updatePassword(username, newPassword)
 }

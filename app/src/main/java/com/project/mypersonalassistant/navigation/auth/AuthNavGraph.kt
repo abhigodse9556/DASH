@@ -39,6 +39,12 @@ fun AuthNavGraph(navController: NavHostController) {
             )
         }
 
+        composable(AuthRoutes.ResetPass.route) {
+            ResetPasswordPage(
+                navigateTo = { route -> navigate(route) }
+            )
+        }
+
         composable(AuthRoutes.Home.route) {
             HomePage(
                 navigateTo = { route -> navigate(route) }

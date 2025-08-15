@@ -1,11 +1,11 @@
 package com.project.mypersonalassistant.roomDB
 
-import kotlin.jvm.Volatile
 import android.content.Context
+import kotlin.jvm.Volatile
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.project.mypersonalassistant.roomDB.DAO.UserDao
+import com.project.mypersonalassistant.roomDB.dao.UserDao
 import com.project.mypersonalassistant.roomDB.entity.User
 
 @Database(entities = [User::class], version = 1)

@@ -1,4 +1,4 @@
-package com.project.mypersonalassistant.roomDB.DAO
+package com.project.mypersonalassistant.roomDB.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -17,4 +17,18 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE username = :username OR email = :username")
     suspend fun getUserByUsernameOrEmail(username: String): User?
+
+    // Get the security question and answer for verification
+    @Query("SELECT question, answer FROM users WHERE username = :username OR email = :username")
+    suspend fun getSecurityQA(username: String): SecurityQA?
+
+    // Update password
+    @Query("UPDATE users SET password = :newPassword WHERE username = :username OR email = :username")
+    suspend fun updatePassword(username: String, newPassword: String)
 }
+
+// DTO for only question and answer
+data class SecurityQA(
+    val question: String,
+    val answer: String
+)
